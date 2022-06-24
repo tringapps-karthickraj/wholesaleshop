@@ -1,0 +1,40 @@
+[{
+        "id":1,
+        "productName":"Rice",
+        "stock":10,
+        "price":20,
+        "unit":"kg"
+    },
+    {
+        "id":2,
+        "productName":"Oil",
+        "stock":10,
+        "price":200,
+        "unit":"L"
+    },
+    {
+        "id":3,
+        "productName":"Wheat",
+        "stock":10,
+        "price":50,
+        "unit":"kg"
+    },
+    {
+        "id":4,
+        "productName":"Dal",
+        "stock":20,
+        "price":80,
+        "unit":"kg"
+    },
+    {
+        "id":5,
+        "productName":"Badham",
+        "stock":5,
+        "price":1000,
+        "unit":"kg"
+    }
+ ]
+ 
+
+
+

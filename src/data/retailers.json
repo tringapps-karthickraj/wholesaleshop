@@ -1,0 +1,20 @@
+[
+    {
+        "id":1,
+        "retailerName":"kr",
+        "address":"Madurai",
+        "productPurchased":[]
+    },
+    {
+        "id":2,
+        "retailerName":"bhavesh",
+        "address":"Madurai",
+        "productPurchased":[]
+    },
+    {
+        "id":3,
+        "retailerName":"saranya",
+        "address":"Madurai",
+        "productPurchased":[]
+    }
+]
