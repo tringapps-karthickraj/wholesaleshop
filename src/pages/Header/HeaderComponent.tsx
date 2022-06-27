@@ -10,8 +10,11 @@ const HeaderComponent = () => {
     const [list, setList] = React.useState<any>(null);
     
   const handleClickOpen = (rList:any) => {
-    setOpen(true);
-    setList(rList)
+      if(!open){
+        setOpen(true);
+        setList(rList)
+      }
+   
   };
 
  
