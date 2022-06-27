@@ -1,13 +1,17 @@
 import React from 'react';
 import './HeaderComponent.scss';
-import { Grid, TextField, Card , CardContent, CardHeader, CardMedia, IconButton, Typography, Menu,MenuItem,Box,Button,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle} from '@mui/material';
+import { Grid, Button} from '@mui/material';
 import RetailerDialog from '../../Dialogs/retailerDialog';
+import { useAppSelector } from '../../store/hooks';
 
 const HeaderComponent = () => {
     const [open, setOpen] = React.useState<boolean>(false);
-
-  const handleClickOpen = () => {
+    const retailerList = useAppSelector((state)=>state.retailers.retailerList);
+    const [list, setList] = React.useState<any>(null);
+    
+  const handleClickOpen = (rList:any) => {
     setOpen(true);
+    setList(rList)
   };
 
  
@@ -18,18 +22,14 @@ const HeaderComponent = () => {
                 <Grid item xs={9}>
                     <div className='companyName'>KR-MART</div>
                 </Grid>
-                <Grid className='mtop' item xs={1}>
-                    <Button variant="contained" onClick={handleClickOpen}>Supply 1</Button>
-                    <RetailerDialog  isDialogOpened={true} />
-                </Grid>
-                <Grid className='mtop' item xs={1}>
-                    <Button variant="contained" onClick={handleClickOpen}>Supply 2</Button>
-                    <RetailerDialog  isDialogOpened={true} />
-                </Grid>
-                <Grid className='mtop' item xs={1}>
-                    <Button variant="contained" onClick={handleClickOpen}>Supply 3</Button>
-                    <RetailerDialog  isDialogOpened={true} />
-                </Grid>
+                
+                {retailerList?.length > 0 && retailerList.map((list,index)=>{
+        return <Grid className='mtop' item xs={1} key={index}>
+        <Button variant="contained" onClick={()=>handleClickOpen(list)}>Supply {++index}</Button>
+                    
+    </Grid>})}
+    {list!=null && <RetailerDialog  isDialogOpened={open} setOpen={setOpen} list={list}/>}
+                
             </Grid>
         </div>
     );

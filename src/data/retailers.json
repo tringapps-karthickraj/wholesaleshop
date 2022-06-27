@@ -8,13 +8,13 @@
     {
         "id":2,
         "retailerName":"bhavesh",
-        "address":"Madurai",
+        "address":"Chennai",
         "productPurchased":[]
     },
     {
         "id":3,
         "retailerName":"saranya",
-        "address":"Madurai",
+        "address":"Coimbatore",
         "productPurchased":[]
     }
 ]
