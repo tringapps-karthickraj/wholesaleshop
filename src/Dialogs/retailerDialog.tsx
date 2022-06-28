@@ -63,9 +63,14 @@ const RetailerDialog = ({isDialogOpened,setOpen,list}:Dialogstate) => {
     console.log("data",data)
     console.log("data",typeof data.test[0].productId)
     setOpen(false);} ;
-  const handleChange = (index: number) => {
+  const handleChange = (event:any,index: number) => {
     
-    if(formValues[index]?.productId >0){
+    fields[index].productId = event.target.value;
+    // fields[index].unit =  'kg';
+    console.log('fields',fields);
+
+
+    if(fields[index]?.productId >0){
       console.log(formValues[index]?.productId)
     }else{
       console.log('sddsd')
@@ -110,7 +115,7 @@ const RetailerDialog = ({isDialogOpened,setOpen,list}:Dialogstate) => {
           })}
                     className={errors?.test?.[index]?.productId ? "error" : ""}
           label="Products"
-          onChange={(event)=>handleChange(index)}
+          onChange={($event)=>handleChange($event,index)}
         >
            <MenuItem value="">sasa</MenuItem>
          {productList.length > 0 &&
@@ -125,10 +130,9 @@ const RetailerDialog = ({isDialogOpened,setOpen,list}:Dialogstate) => {
     </Box>
                   </Grid>
                   {
-                  //formValues[index].productId > 0  && 
+                  fields[index]?.productId !=0  && 
                   
-                  
-                  <><Grid item xs={2}>
+                  <Grid item xs={2}>
               <TextField
                 autoFocus
                 margin="dense"
@@ -142,7 +146,9 @@ const RetailerDialog = ({isDialogOpened,setOpen,list}:Dialogstate) => {
                 })}
                 className={errors?.test?.[index]?.quantity ? "error" : ""}
                 style={{ margin: "0px" }} />
-            </Grid><Grid item xs={2}>
+            </Grid>
+        }
+           {/* { <Grid item xs={2}>
                 <TextField
                   disabled
                   id="outlined-disabled"
@@ -156,7 +162,7 @@ const RetailerDialog = ({isDialogOpened,setOpen,list}:Dialogstate) => {
               <Button  variant="contained" onClick={() => remove(index)}>Remove</Button>
               </Grid>
               
-              </>}
+              } */}
                   </Grid>
                     );
                   })}
