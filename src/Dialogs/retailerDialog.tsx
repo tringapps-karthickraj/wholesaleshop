@@ -1,9 +1,11 @@
 import React from 'react';
-import { useForm, useFieldArray, Controller, useWatch } from "react-hook-form";
+import { useForm, useFieldArray, useWatch } from "react-hook-form";
 import { Grid,InputLabel ,MenuItem, TextField,Box,Button,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle} from '@mui/material';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { useAppSelector } from '../store/hooks';
+import { useAppSelector,useAppDispatch } from '../store/hooks';
+import {updateList} from '../store/retailerReducer';
+
 type Dialogstate={
   isDialogOpened:boolean,
   setOpen:any,
@@ -11,7 +13,7 @@ type Dialogstate={
 }
 type ProductList= {
   id: number;
-  price: string;
+  price: number;
   productName: string;
   stock: number;
   unit: string;
@@ -22,26 +24,26 @@ type FormValues = {
   productName: string;
   price: number;
   quantity: number;
-  unit:string;}[]
+  unit:string;
+
+}[]
 };
 
 const RetailerDialog = ({isDialogOpened,setOpen,list}:Dialogstate) => {
-  const [pId, setPId] = React.useState<string>('');
+  const dispatch = useAppDispatch();
   const [productList,setProductList] = React.useState<ProductList[]>([]);
   const storeProductList = useAppSelector((state)=>state.products.productList);
   
   React.useEffect(() => {
     let filterProductList = storeProductList.filter(el=>el.stock > 0);
     setProductList(filterProductList);
-    setPId('');
-    console.log(productList);
     reset({
       test: [{ productId:0, productName: "", price:0, quantity:0, unit:""}]
     })
   },[isDialogOpened]);
 
 
-  const { register, control, handleSubmit, reset, watch ,  formState: { errors } } = useForm<FormValues>({
+  const { register, control, handleSubmit, reset, formState: { errors },setValue  } = useForm<FormValues>({
     defaultValues: {
       test: [{ productId:0, productName: "", price:0, quantity:0, unit:""}]
     }
@@ -60,121 +62,152 @@ const RetailerDialog = ({isDialogOpened,setOpen,list}:Dialogstate) => {
 
   const onSubmit = (data: any) =>{
     
-    console.log("data",data)
-    console.log("data",typeof data.test[0].productId)
-    setOpen(false);} ;
-  const handleChange = (event:any,index: number) => {
-    
-    fields[index].productId = event.target.value;
-    // fields[index].unit =  'kg';
-    console.log('fields',fields);
-
-
-    if(fields[index]?.productId >0){
-      console.log(formValues[index]?.productId)
-    }else{
-      console.log('sddsd')
+    let sendObj:any={
+        retailerId:list.id,
+        newProdPruchase:data.test
     }
+    dispatch(updateList(sendObj))
     
+    setOpen(false);
+
+  } ;
+
+
+  const handleChange = (event: SelectChangeEvent<any>,index: number) => {
+    setValue(`test.${index}.productId`,event.target.value)
+    let product = productList.find(el=>el.id ===  event.target.value);
+
+    if(product){
+      setValue(`test.${index}.productName`,product.productName)
+      setValue(`test.${index}.price`,product.price)
+      setValue(`test.${index}.unit`,product.unit)
+    }
   };
+
+
   const handleClose = () => {
     setOpen(false);
   };
+
+  const total = formValues.reduce(
+    (acc, current) => acc + (current.price || 0) * (current.quantity || 0),
+    0
+  );
+
+
+  const getStock =(productId:number)=>{
+        return storeProductList.find(el=>el.id === productId)?.stock;   
+  }
+ 
   return (
-    <>
-     
-       <Dialog open={isDialogOpened} onClose={handleClose}  fullWidth   maxWidth="lg">
+          <>
+            <Dialog open={isDialogOpened} onClose={handleClose}  fullWidth   maxWidth="lg">
               <DialogTitle>Address</DialogTitle>
                 <DialogContent>
                   <DialogContentText>
-                  {list.address}
+                    {list.address}
                   </DialogContentText>
                   <Button
-                  style={{marginBottom:"20px"}}
-                  variant="contained"
-          type="button"
-          onClick={() =>
-            append({ productId:0, productName: "", price:0, quantity:0, unit:""})
-          }
-        >
-          Add
-        </Button>
+                    style={{marginBottom:"20px"}}
+                    variant="contained"
+                    type="button"
+                    onClick={() =>
+                      append({ productId:0, productName: "", price:0, quantity:0, unit:""})
+                    }
+                  >Add
+                  </Button>
                   <form onSubmit={handleSubmit(onSubmit)}>
-        {fields.map((field, index) => {
-          return (
-            
-                  <Grid container spacing={2} style={{marginBottom:"20px"}}>
-                  <Grid item xs={4} >
-                  <Box sx={{ minWidth: 120 }}>
-      <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Products</InputLabel>
-        <Select
-         
-          {...register(`test.${index}.productId` as const, {
-            required: true
-          })}
-                    className={errors?.test?.[index]?.productId ? "error" : ""}
-          label="Products"
-          onChange={($event)=>handleChange($event,index)}
-        >
-           <MenuItem value="">sasa</MenuItem>
-         {productList.length > 0 &&
-                  productList.map((model) => (
-                     <MenuItem key={model.id}
-                     value={model.id}>{model.productName}</MenuItem>
-                 ))
-                 
-             }
-        </Select>
-      </FormControl>
-    </Box>
-                  </Grid>
-                  {
-                  fields[index]?.productId !=0  && 
+                    {fields.map((field, index) => {
+                      return (
+                        <Grid key={field.id} container spacing={2} style={{marginBottom:"20px"}}>
+                          <Grid item xs={4} >
+                            <Box sx={{ minWidth: 120 }}>
+                              <FormControl fullWidth>
+                                <InputLabel id="demo-simple-select-label">Products</InputLabel>
+                                  <Select
+                                    {...register(`test.${index}.productId` as const, {
+                                        required: true
+                                      })}
+                                    className={errors?.test?.[index]?.productId ? "error" : ""}
+                                    label="Products"
+                                    onChange={($event)=>handleChange($event,index)}
+                                  >
+                                    {productList.length > 0 &&
+                                              productList.map((model) => (
+                                                <MenuItem key={model.id}
+                                                value={model.id}>{model.productName}</MenuItem>
+                                            ))
+                                    }
+                                  </Select>
+                              </FormControl>
+                            </Box>
+                          </Grid>
                   
-                  <Grid item xs={2}>
-              <TextField
-                autoFocus
-                margin="dense"
-                id="name"
-                label="Quantity"
-                type="number"
-                fullWidth
-                variant="outlined"
-                {...register(`test.${index}.quantity` as const, {
-                  required: true
-                })}
-                className={errors?.test?.[index]?.quantity ? "error" : ""}
-                style={{ margin: "0px" }} />
-            </Grid>
-        }
-           {/* { <Grid item xs={2}>
-                <TextField
-                  disabled
-                  id="outlined-disabled"
-                  label="Price"
-                  defaultValue="Hello World" />
-              </Grid>
-              <Grid item xs={2}>
-
-              </Grid>
-              <Grid item xs={2}>
-              <Button  variant="contained" onClick={() => remove(index)}>Remove</Button>
-              </Grid>
-              
-              } */}
-                  </Grid>
+             
+                              {formValues[index]?.productId > 0 && 
+                                  <>
+                                    {formValues[index]?.productId > 0 && 
+                                      <Grid item xs={2}>
+                                        <TextField
+                                        
+                                          autoFocus
+                                          margin="dense"
+                                          id="name"
+                                          label={`Quantity(${formValues[index]?.unit})`}
+                                          type="number"
+                                          InputProps={ { inputProps: { min: 0, max: getStock(formValues[index]?.productId) } } }
+                                          fullWidth
+                                          variant="outlined"
+                                          {...register(`test.${index}.quantity` as const, {
+                                            required: true
+                                          })}
+                                          className={errors?.test?.[index]?.quantity ? "error" : ""}
+                                          style={{ margin: "0px" }} />
+                                      </Grid>}
+                                      <Grid item xs={2}>
+                                        <TextField
+                                        {...register(`test.${index}.price` as const, {
+                                          required: true
+                                        })}
+                                          disabled
+                                          id="outlined-disabled"
+                                          label="Price(₹)" />
+                                      </Grid>
+                                      <Grid item xs={2}>
+                                        <TextField
+                                            value={formValues[index]?.price * formValues[index]?.quantity}
+                                            disabled
+                                            id="outlined-disabled"
+                                            label="Total(₹)" />
+                                      </Grid>
+                                  </>}
+                              {fields.length > 1 &&  
+                                      <Grid item xs={2}>
+                                        <Button  variant="contained" onClick={() => remove(index)}>Remove</Button>
+                                      </Grid>}
+                        </Grid>
                     );
-                  })}
-                   <DialogActions>
-                  <Button onClick={handleClose}>Cancel</Button>
-                  <Button type='submit' >Add</Button>
-                </DialogActions>
+                    })}
+
+                    <Grid  container spacing={2} style={{marginBottom:"20px"}}>
+                        {formValues.find(el=>el.quantity > 0) && 
+                          <>
+                            <Grid item xs={8} >
+                              <label>total</label>
+                            </Grid>
+                            <Grid item xs={2} >
+                              <label>₹{total}</label>
+                            </Grid>
+                          </>}
+                    </Grid>
+                    <DialogActions>
+                      <Button onClick={handleClose}>Cancel</Button>
+                      <Button type='submit' >Add</Button>
+                    </DialogActions>
                   </form>
-                </DialogContent>
-               
+                </DialogContent>   
             </Dialog>
-    </>
+          </>
   );
 };
 

@@ -11,9 +11,10 @@ function App() {
           <HeaderComponent/>
         </Grid>
         <Grid item xs={12} className="lheight">
-          <RetailerComponent/>
+        <RetailerComponent/>
         </Grid>
      </Grid>
+     
      </div>
   );
 }
