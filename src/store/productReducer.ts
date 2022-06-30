@@ -1,17 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit'
 import products from '../data/product.json';
 import {updateList } from './retailerReducer';
+import {IntialStateForProd} from '../interface/interface';
 
-type IntialState = {
-    productList:{
-        id:number,
-        price:number,
-        productName:string,
-        stock:number,
-        unit:string
-    }[]
-}
- const initialState : IntialState = {
+ const initialState : IntialStateForProd = {
     productList: localStorage['products'] ?  JSON.parse(localStorage['products']) : products,
  }
  if(!localStorage['products']){
@@ -30,8 +22,7 @@ export const productlists = createSlice({
       const ProdPruchase =action.payload.newProdPruchase;
 
       ProdPruchase.forEach((element: any) => {
-        let idx = copyArr.findIndex(el=>el.id===element.productId);
-        copyArr[idx].stock -=element.quantity;
+        copyArr.find(el=>el.id===element.productId)!.stock -=element.quantity;
       });
       localStorage['products'] = JSON.stringify(copyArr);
 
