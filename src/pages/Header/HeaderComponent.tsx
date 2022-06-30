@@ -28,7 +28,7 @@ const HeaderComponent = () => {
                 
                 {retailerList?.length > 0 && retailerList.map((list,index)=>{
         return <Grid className='mtop' item xs={1} key={index}>
-        <Button variant="contained" onClick={()=>handleClickOpen(list)}>Supply {++index}</Button>
+        <Button variant="contained" onClick={()=>handleClickOpen(list)}>{list.retailerName}</Button>
                     
     </Grid>})}
     {list!=null && <RetailerDialog  isDialogOpened={open} setOpen={setOpen} list={list}/>}
