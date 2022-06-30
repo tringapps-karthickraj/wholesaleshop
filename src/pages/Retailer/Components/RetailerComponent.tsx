@@ -7,38 +7,25 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Typography } from '@mui/material';
+import {RetailerListType} from '../../../interface/interface';
 
-type ProductPurchased = {
-  productId: number;
-  productName: string;
-  price: number;
-  quantity: number;
-  unit:string;
-}[]
-type retailerList={
-    id:number,
-    retailerName:string,
-    address:string,
-    productPurchased:ProductPurchased
-  }
-type retailerListType={
-  list:retailerList
-}
-const RetailerComponent1 = ({list}:retailerListType) => {
-  const total = list.productPurchased.reduce(
+
+
+const RetailerComponent1 = ({retailerList}:RetailerListType) => {
+  const total = retailerList.productPurchased.reduce(
     (acc, current) => acc + current.price* current.quantity,
     0
   );
-  console.log(list.productPurchased);
+  console.log(retailerList.productPurchased);
     return (
         <>
           <div className='flex'>
           
-          <div><label>Retailername : {list.retailerName}</label> </div><div className='ml'><label>Total : ₹{total}</label></div>
+          <div><label>Retailername : {retailerList.retailerName}</label> </div><div className='ml'><label>Total : ₹{total}</label></div>
           </div>
           
 
-{list.productPurchased?.length > 0 ? <TableContainer component={Paper}>
+{retailerList.productPurchased?.length > 0 ? <TableContainer component={Paper}>
       <Table sx={{ minWidth: 200 }} aria-label="simple table">
         <TableHead>
           <TableRow>
@@ -49,7 +36,7 @@ const RetailerComponent1 = ({list}:retailerListType) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {list.productPurchased.map((row) => (
+          {retailerList.productPurchased.map((row) => (
             <TableRow
               key={row.productName}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}

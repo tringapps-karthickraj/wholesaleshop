@@ -13,7 +13,7 @@ const RetailerComponent = () => {
             <Grid container spacing={2}>
             {retailerList?.length > 0 && retailerList.map((list,index)=>{
                 return <Grid key={index}  item xs={4} className="borderrig">
-                            <RetailerComponent1 list={list}/>
+                            <RetailerComponent1 retailerList={list}/>
                         </Grid>})}
                 
                 

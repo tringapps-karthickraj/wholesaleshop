@@ -3,31 +3,10 @@ import { useForm, useFieldArray, useWatch } from "react-hook-form";
 import { Grid,InputLabel ,MenuItem, TextField,Box,Button,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle} from '@mui/material';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { useAppSelector,useAppDispatch } from '../store/hooks';
-import {updateList} from '../store/retailerReducer';
+import { useAppSelector,useAppDispatch } from '../../store/hooks';
+import {updateList} from '../../store/retailerReducer';
+import {Dialogstate,ProductList,FormValues} from '../../interface/interface';
 
-type Dialogstate={
-  isDialogOpened:boolean,
-  setOpen:any,
-  list:any
-}
-type ProductList= {
-  id: number;
-  price: number;
-  productName: string;
-  stock: number;
-  unit: string;
-}
-
-type FormValues = {
- test:{ productId: number;
-  productName: string;
-  price: number;
-  quantity: number;
-  unit:string;
-
-}[]
-};
 
 const RetailerDialog = ({isDialogOpened,setOpen,list}:Dialogstate) => {
   const dispatch = useAppDispatch();
@@ -67,7 +46,9 @@ const RetailerDialog = ({isDialogOpened,setOpen,list}:Dialogstate) => {
         newProdPruchase:data.test
     }
     dispatch(updateList(sendObj))
-    
+    reset({
+      test: [{ productId:0, productName: "", price:0, quantity:0, unit:""}]
+    })
     setOpen(false);
 
   } ;
@@ -79,6 +60,7 @@ const RetailerDialog = ({isDialogOpened,setOpen,list}:Dialogstate) => {
 
     if(product){
       setValue(`test.${index}.productName`,product.productName)
+      setValue(`test.${index}.quantity`,0)
       setValue(`test.${index}.price`,product.price)
       setValue(`test.${index}.unit`,product.unit)
     }
@@ -142,30 +124,32 @@ const RetailerDialog = ({isDialogOpened,setOpen,list}:Dialogstate) => {
                               </FormControl>
                             </Box>
                           </Grid>
-                  
+                          
              
                               {formValues[index]?.productId > 0 && 
                                   <>
                                     {formValues[index]?.productId > 0 && 
                                       <Grid item xs={2}>
                                         <TextField
-                                        
                                           autoFocus
                                           margin="dense"
                                           id="name"
                                           label={`Quantity(${formValues[index]?.unit})`}
                                           type="number"
-                                          InputProps={ { inputProps: { min: 0, max: getStock(formValues[index]?.productId) } } }
+                                          helperText={errors?.test?.[index]?.quantity ? `minimum 1 , maximum ${getStock(formValues[index]?.productId)}` : null}
+                                          error={errors?.test?.[index]?.quantity ? true:false}
+                                         // InputProps={ { inputProps: { min: 1, max: getStock(formValues[index]?.productId) } } }
                                           fullWidth
                                           variant="outlined"
                                           {...register(`test.${index}.quantity` as const, {
-                                            required: true
+                                            required: true , min: 1, max: getStock(formValues[index]?.productId)
                                           })}
-                                          className={errors?.test?.[index]?.quantity ? "error" : ""}
+                                          
                                           style={{ margin: "0px" }} />
                                       </Grid>}
                                       <Grid item xs={2}>
                                         <TextField
+                                        
                                         {...register(`test.${index}.price` as const, {
                                           required: true
                                         })}

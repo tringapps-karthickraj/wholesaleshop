@@ -1,7 +1,7 @@
 import React from 'react';
 import './HeaderComponent.scss';
 import { Grid, Button} from '@mui/material';
-import RetailerDialog from '../../Dialogs/retailerDialog';
+import RetailerDialog from '../../sharerdComponent/Dialogs/retailerDialog';
 import { useAppSelector } from '../../store/hooks';
 
 const HeaderComponent = () => {

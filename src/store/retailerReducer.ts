@@ -1,21 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
 import retailers from '../data/retailers.json';
-type ProductPurchased = {
-  productId: number;
-  productName: string;
-  price: number;
-  quantity: number;
-  unit:string;
-}
-type IntialState = {
-    retailerList:{
-      id:number,
-      retailerName:string,
-      address:string,
-      productPurchased:ProductPurchased[]
-    }[]
-}
- const initialState : IntialState = {
+import {IntialStateForRet} from '../interface/interface';
+
+ const initialState : IntialStateForRet = {
   retailerList: localStorage['retailers'] ?  JSON.parse(localStorage['retailers']) : retailers,
  }
 
@@ -34,7 +21,13 @@ export const retailerList = createSlice({
       const newProdPruchase =action.payload.newProdPruchase;
       const copyArr = [...state.retailerList];
       newProdPruchase.forEach((element: any) => {
-        copyArr.find(el=>el.id===rId)?.productPurchased.push(element);
+        element.quantity = parseInt(element.quantity);
+        if(copyArr.find(el=>el.id===rId)?.productPurchased.find(el=>el.productId === element.productId)){
+          copyArr.find(el=>el.id===rId)!.productPurchased.find(el=>el.productId === element.productId)!.quantity += element.quantity;
+        }else{
+          copyArr.find(el=>el.id===rId)?.productPurchased.push(element);
+        }
+        
       });
       localStorage['retailers'] = JSON.stringify(copyArr);
        },
