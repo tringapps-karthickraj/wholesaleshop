@@ -13,6 +13,7 @@ export interface ProductPurchased  {
     price: number;
     quantity: number;
     unit:string;
+    date:string;
 }
 
 export interface RetailerList{

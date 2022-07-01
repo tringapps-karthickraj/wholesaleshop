@@ -21,6 +21,7 @@ export const retailerList = createSlice({
       const newProdPruchase =action.payload.newProdPruchase;
       const copyArr = [...state.retailerList];
       newProdPruchase.forEach((element: any) => {
+        element.date =new Date().toLocaleDateString();
         element.quantity = parseInt(element.quantity);
         if(copyArr.find(el=>el.id===rId)?.productPurchased.find(el=>el.productId === element.productId)){
           copyArr.find(el=>el.id===rId)!.productPurchased.find(el=>el.productId === element.productId)!.quantity += element.quantity;
