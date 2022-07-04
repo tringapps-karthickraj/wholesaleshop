@@ -80,6 +80,13 @@ const RetailerDialog = ({isDialogOpened,setOpen,list}:Dialogstate) => {
   const getStock =(productId:number)=>{
         return storeProductList.find(el=>el.id === productId)?.stock;   
   }
+
+  const addNewItem=()=>{
+    if(formValues[fields.length-1]?.productId && formValues[fields.length-1]?.quantity >0){
+      append({ productId:0, productName: "", price:0, quantity:0, unit:""})
+    }
+    
+  }
  
   return (
           <>
@@ -93,9 +100,7 @@ const RetailerDialog = ({isDialogOpened,setOpen,list}:Dialogstate) => {
                     style={{marginBottom:"20px"}}
                     variant="contained"
                     type="button"
-                    onClick={() =>
-                      append({ productId:0, productName: "", price:0, quantity:0, unit:""})
-                    }
+                    onClick={addNewItem}
                   >Add
                   </Button>
                   <form onSubmit={handleSubmit(onSubmit)}>
@@ -107,16 +112,19 @@ const RetailerDialog = ({isDialogOpened,setOpen,list}:Dialogstate) => {
                               <FormControl fullWidth>
                                 <InputLabel id="demo-simple-select-label">Products</InputLabel>
                                   <Select
+                                  error={errors?.test?.[index]?.productId ? true:false}
                                     {...register(`test.${index}.productId` as const, {
                                         required: true
                                       })}
+                                      
                                     className={errors?.test?.[index]?.productId ? "error" : ""}
                                     label="Products"
                                     onChange={($event)=>handleChange($event,index)}
                                   >
                                     {productList.length > 0 &&
+                                    
                                               productList.map((model) => (
-                                                <MenuItem key={model.id}
+                                                <MenuItem key={model.id} disabled={formValues.find(el=>el.productId === model.id) ? true:false}
                                                 value={model.id}>{model.productName}</MenuItem>
                                             ))
                                     }

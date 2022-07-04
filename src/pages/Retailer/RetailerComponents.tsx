@@ -1,6 +1,6 @@
 import React from 'react';
 import { Grid} from '@mui/material';
-import RetailerComponent1 from './Components/RetailerComponent';
+import RetailerComponent1 from './Components/RetailerComponent1';
 import './RetailerComponent.scss';
 import { useAppSelector } from '../../store/hooks';
 

@@ -26,9 +26,9 @@ const HeaderComponent = () => {
                     <div className='companyName'>KR-MART</div>
                 </Grid>
                 
-                {retailerList?.length > 0 && retailerList.map((list,index)=>{
+                {retailerList?.length > 0 && retailerList.map((rList,index)=>{
         return <Grid className='mtop' item xs={1} key={index}>
-        <Button variant="contained" onClick={()=>handleClickOpen(list)}>{list.retailerName}</Button>
+        <Button variant="contained" onClick={()=>handleClickOpen(rList)}>{rList.retailerName}</Button>
                     
     </Grid>})}
     {list!=null && <RetailerDialog  isDialogOpened={open} setOpen={setOpen} list={list}/>}
