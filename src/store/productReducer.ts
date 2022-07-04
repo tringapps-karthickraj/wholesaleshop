@@ -30,5 +30,4 @@ export const productlists = createSlice({
   },
 })
 
-export const {  } = productlists.actions
 export default productlists.reducer
